@@ -1,0 +1,1057 @@
+<title>Финансовый план за 5 дней — Материалы курса</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:     #0C1220;
+  --navy-2:   #141E38;
+  --navy-3:   #1A2756;
+  --gold:     #C4A23A;
+  --gold-lt:  #E8CC72;
+  --gold-lo:  rgba(196,162,58,.12);
+  --gold-bd:  rgba(196,162,58,.35);
+  --cream:    #EDE7D4;
+  --cream-lo: rgba(237,231,212,.6);
+  --white:    #ffffff;
+  --muted:    rgba(237,231,212,.45);
+  --sidebar-w: 220px;
+  --top-h:    56px;
+}
+
+html { font-size: 16px; }
+body {
+  background: var(--navy);
+  color: var(--cream);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── TOPBAR ──────────────────────────────────────────────────────── */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: var(--top-h);
+  background: rgba(12,18,32,.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--gold-bd);
+  display: flex; align-items: center; padding: 0 24px 0 calc(var(--sidebar-w) + 24px);
+  gap: 16px;
+}
+.progress-dots { display: flex; gap: 8px; }
+.progress-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--navy-3);
+  border: 1px solid var(--gold-bd);
+  transition: background .3s, transform .3s;
+  cursor: pointer;
+}
+.progress-dot.active { background: var(--gold); transform: scale(1.3); }
+.progress-dot.done   { background: var(--gold-lo); border-color: var(--gold); }
+.topbar-label {
+  margin-left: auto;
+  font-size: 13px; color: var(--muted); letter-spacing: .04em;
+}
+.topbar-day-title {
+  font-size: 14px; font-weight: 600; color: var(--gold);
+}
+.key-hint {
+  font-size: 12px; color: var(--muted);
+  display: flex; gap: 6px; align-items: center;
+}
+.key-hint kbd {
+  background: var(--navy-3); border: 1px solid var(--gold-bd);
+  border-radius: 4px; padding: 1px 6px;
+  font-size: 11px; color: var(--cream-lo);
+}
+
+/* ── SIDEBAR ─────────────────────────────────────────────────────── */
+.sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w);
+  background: var(--navy-2);
+  border-right: 1px solid var(--gold-bd);
+  display: flex; flex-direction: column;
+  padding-top: var(--top-h);
+  z-index: 99;
+}
+.sidebar-head {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--gold-bd);
+}
+.sidebar-brand {
+  font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--gold); font-weight: 600;
+}
+.sidebar-title {
+  font-size: 15px; font-weight: 700; color: var(--cream);
+  line-height: 1.3; margin-top: 6px;
+  font-family: Georgia, "Times New Roman", serif;
+}
+.sidebar-meta { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+.day-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+.day-btn {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; padding: 12px 20px;
+  background: none; border: none;
+  cursor: pointer; text-align: left;
+  color: var(--muted);
+  transition: color .2s, background .2s;
+  position: relative;
+}
+.day-btn::before {
+  content: '';
+  position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px;
+  background: var(--gold);
+  border-radius: 0 2px 2px 0;
+  opacity: 0; transition: opacity .2s;
+}
+.day-btn:hover { color: var(--cream); background: var(--gold-lo); }
+.day-btn.active { color: var(--cream); }
+.day-btn.active::before { opacity: 1; }
+.day-num-badge {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: var(--navy-3); border: 1px solid var(--gold-bd);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--muted);
+  flex-shrink: 0; transition: background .2s, color .2s, border-color .2s;
+}
+.day-btn.active .day-num-badge { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+.day-btn-text { line-height: 1.2; }
+.day-btn-label { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 1px; }
+.day-btn-name  { font-size: 13px; font-weight: 600; }
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--gold-bd);
+  font-size: 11px; color: var(--muted);
+}
+.sidebar-footer a { color: var(--gold); text-decoration: none; }
+
+/* ── MAIN ────────────────────────────────────────────────────────── */
+.main {
+  margin-left: var(--sidebar-w);
+  padding-top: var(--top-h);
+  min-height: 100vh;
+}
+
+/* ── DAY PANEL ───────────────────────────────────────────────────── */
+.day-panel {
+  display: none;
+  min-height: calc(100vh - var(--top-h));
+  padding: 48px 56px 80px;
+  position: relative; overflow: hidden;
+  animation: panelIn .35s ease both;
+}
+.day-panel.active { display: block; }
+
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Watermark day number */
+.day-watermark {
+  position: absolute; right: -20px; top: 20px;
+  font-size: 280px; font-weight: 900;
+  font-family: Georgia, serif;
+  color: var(--gold);
+  opacity: .04; line-height: 1;
+  pointer-events: none; user-select: none;
+  letter-spacing: -.02em;
+}
+
+/* Day header */
+.day-header { margin-bottom: 40px; position: relative; }
+.day-eyebrow {
+  font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--gold); font-weight: 600; margin-bottom: 10px;
+}
+.day-heading {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(32px, 3.5vw, 52px);
+  font-weight: 700; color: var(--white);
+  line-height: 1.1; text-wrap: balance;
+  margin-bottom: 16px;
+}
+.day-thesis {
+  font-size: clamp(16px, 1.6vw, 20px);
+  color: var(--cream-lo); max-width: 680px;
+  line-height: 1.6;
+}
+.gold-rule {
+  width: 60px; height: 3px; background: var(--gold);
+  border-radius: 2px; margin-top: 24px;
+}
+
+/* Content grid */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.content-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+.content-grid.wide  { grid-template-columns: 1fr; }
+
+/* Cards */
+.card {
+  background: var(--navy-2);
+  border: 1px solid rgba(196,162,58,.2);
+  border-radius: 12px;
+  padding: 24px 28px;
+}
+.card-eyebrow {
+  font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--gold); font-weight: 700; margin-bottom: 10px;
+}
+.card-title {
+  font-family: Georgia, serif;
+  font-size: 20px; font-weight: 700; color: var(--white);
+  margin-bottom: 12px; line-height: 1.25;
+}
+.card-body {
+  font-size: 15px; color: var(--cream-lo); line-height: 1.65;
+}
+.card-body ul { padding-left: 0; list-style: none; }
+.card-body li {
+  padding: 6px 0 6px 20px; position: relative; border-bottom: 1px solid rgba(196,162,58,.08);
+}
+.card-body li:last-child { border-bottom: none; }
+.card-body li::before {
+  content: '—'; position: absolute; left: 0;
+  color: var(--gold); font-weight: 700;
+}
+
+/* Formula card */
+.formula-card {
+  background: var(--navy-3);
+  border: 1px solid var(--gold-bd);
+  border-radius: 10px; padding: 20px 24px;
+  text-align: center; margin-top: 12px;
+}
+.formula-text {
+  font-family: Georgia, serif;
+  font-size: clamp(18px, 2vw, 26px);
+  color: var(--gold); font-weight: 700;
+  letter-spacing: .02em;
+}
+.formula-label { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+/* Practice block */
+.practice-block {
+  background: var(--navy-3);
+  border: 1px solid var(--gold-bd);
+  border-left: 4px solid var(--gold);
+  border-radius: 0 12px 12px 0;
+  padding: 24px 28px;
+  margin-bottom: 20px;
+}
+.practice-block .card-eyebrow { color: var(--gold-lt); }
+
+/* Task block */
+.task-block {
+  background: linear-gradient(135deg, var(--navy-2) 0%, #1a2040 100%);
+  border: 1px solid var(--gold);
+  border-radius: 12px; padding: 24px 28px;
+  display: flex; gap: 20px; align-items: flex-start;
+}
+.task-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: var(--gold); color: var(--navy);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0; font-weight: 900;
+}
+.task-content .card-eyebrow { margin-bottom: 6px; }
+.task-content .card-title { font-size: 18px; margin-bottom: 8px; }
+.task-content .card-body { font-size: 15px; }
+
+/* Key concept */
+.concept {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 0; border-bottom: 1px solid rgba(196,162,58,.1);
+}
+.concept:last-child { border-bottom: none; }
+.concept-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--gold);
+  margin-top: 7px; flex-shrink: 0;
+}
+.concept-label { font-size: 15px; color: var(--cream); line-height: 1.5; }
+.concept-label strong { color: var(--white); }
+
+/* Quote / insight */
+.insight {
+  background: var(--gold-lo);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+  padding: 14px 20px; margin: 12px 0;
+  font-size: 15px; color: var(--cream); font-style: italic;
+}
+
+/* Table */
+.data-table {
+  width: 100%; border-collapse: collapse; font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.data-table th {
+  text-align: left; padding: 10px 14px;
+  background: var(--navy-3);
+  color: var(--gold); font-size: 12px;
+  letter-spacing: .06em; text-transform: uppercase;
+  border-bottom: 1px solid var(--gold-bd);
+}
+.data-table td {
+  padding: 10px 14px; border-bottom: 1px solid rgba(196,162,58,.08);
+  color: var(--cream-lo);
+}
+.data-table tr:hover td { background: var(--gold-lo); color: var(--cream); }
+.data-table td.tag {
+  color: var(--gold); font-weight: 600; font-size: 13px;
+}
+.tbl-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid rgba(196,162,58,.2); }
+
+/* Steps */
+.steps { display: flex; flex-direction: column; gap: 0; }
+.step { display: flex; gap: 16px; padding: 14px 0; border-bottom: 1px solid rgba(196,162,58,.1); }
+.step:last-child { border-bottom: none; }
+.step-num {
+  font-family: Georgia, serif;
+  font-size: 28px; font-weight: 700; color: var(--gold);
+  line-height: 1; min-width: 32px; margin-top: 2px;
+}
+.step-body { font-size: 15px; color: var(--cream); line-height: 1.55; }
+.step-body strong { color: var(--white); }
+
+/* Highlight numbers */
+.big-num {
+  font-family: Georgia, serif;
+  font-size: 48px; font-weight: 700; color: var(--gold);
+  line-height: 1;
+}
+.num-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+/* Checklist */
+.checklist { display: flex; flex-direction: column; gap: 10px; }
+.check-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  font-size: 15px; color: var(--cream); line-height: 1.45;
+}
+.check-box {
+  width: 20px; height: 20px; border: 2px solid var(--gold-bd);
+  border-radius: 5px; flex-shrink: 0; margin-top: 1px;
+}
+.check-item strong { color: var(--white); }
+
+/* Nav arrows */
+.panel-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 48px; padding-top: 24px;
+  border-top: 1px solid var(--gold-bd);
+}
+.nav-arrow {
+  display: flex; align-items: center; gap: 8px;
+  background: none; border: 1px solid var(--gold-bd);
+  color: var(--cream-lo); padding: 10px 20px; border-radius: 8px;
+  cursor: pointer; font-size: 14px; font-family: inherit;
+  transition: all .2s;
+}
+.nav-arrow:hover { border-color: var(--gold); color: var(--cream); background: var(--gold-lo); }
+.nav-arrow:disabled { opacity: .3; cursor: default; }
+.nav-arrow svg { width: 16px; height: 16px; }
+
+/* INTRO PANEL */
+.day-panel:not(.active) { display: none !important; }
+.intro-panel.active { display: flex !important; }
+.intro-panel {
+  flex-direction: column;
+  align-items: flex-start; justify-content: center;
+  min-height: calc(100vh - var(--top-h));
+  padding: 64px 56px;
+  position: relative; overflow: hidden;
+}
+.intro-panel .day-watermark { font-size: 380px; top: -40px; right: -60px; opacity: .03; }
+.intro-big {
+  font-family: Georgia, serif;
+  font-size: clamp(36px, 5vw, 72px);
+  font-weight: 700; color: var(--white);
+  line-height: 1.05; text-wrap: balance;
+  max-width: 760px; margin-bottom: 24px;
+}
+.intro-big span { color: var(--gold); }
+.intro-sub {
+  font-size: clamp(16px, 1.8vw, 22px);
+  color: var(--cream-lo); max-width: 580px;
+  line-height: 1.6; margin-bottom: 40px;
+}
+.stat-row { display: flex; gap: 40px; margin-bottom: 48px; flex-wrap: wrap; }
+.stat-item { display: flex; flex-direction: column; gap: 4px; }
+.start-btn {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--gold); color: var(--navy);
+  border: none; padding: 16px 28px; border-radius: 10px;
+  font-size: 16px; font-weight: 700; font-family: inherit;
+  cursor: pointer; transition: opacity .2s;
+}
+.start-btn:hover { opacity: .88; }
+.start-btn svg { width: 18px; height: 18px; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .content-grid { grid-template-columns: 1fr; }
+  .content-grid.three { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .sidebar { transform: translateX(-100%); transition: transform .3s; }
+  .sidebar.open { transform: none; }
+  .main { margin-left: 0; }
+  .topbar { padding-left: 56px; }
+  .day-panel, .intro-panel { padding: 32px 20px 60px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .day-panel { animation: none; }
+}
+</style>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="progress-dots" id="dots"></div>
+  <div class="topbar-day-title" id="topDayTitle"></div>
+  <div class="topbar-label">Финансовый план за 5 дней</div>
+  <div class="key-hint"><kbd>←</kbd><kbd>→</kbd> навигация</div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-head">
+    <div class="sidebar-brand">Курс · @fin_clab</div>
+    <div class="sidebar-title">Финансовый план за 5 дней</div>
+    <div class="sidebar-meta">Юлия Пашнина · Живые созвоны</div>
+  </div>
+  <nav class="day-nav" id="dayNav"></nav>
+  <div class="sidebar-footer">
+    Шаблоны → <a href="#">Google Sheets</a><br>
+    Бот → <a href="https://t.me/finclab_bot" target="_blank">@finclab_bot</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- INTRO -->
+<section class="intro-panel day-panel active" id="panel-0">
+  <div class="day-watermark">★</div>
+  <div class="intro-big">Добро пожаловать<br>на курс <span>Финансовый<br>план за 5 дней</span></div>
+  <div class="intro-sub">Пять созвонов — пять шагов. Разбираем ваши реальные деньги и вместе составляем личный финансовый план на год.</div>
+  <div class="stat-row">
+    <div class="stat-item">
+      <div class="big-num">4 авг</div>
+      <div class="num-label">дата старта</div>
+    </div>
+    <div class="stat-item">
+      <div class="big-num" style="font-size:36px">18:30 ЕКБ</div>
+      <div class="num-label">16:30 МСК · каждый день</div>
+    </div>
+    <div class="stat-item">
+      <div class="big-num">5</div>
+      <div class="num-label">человек в группе</div>
+    </div>
+    <div class="stat-item">
+      <div class="big-num" style="font-size:32px">Контур</div>
+      <div class="num-label">платформа для созвонов</div>
+    </div>
+  </div>
+  <div class="stat-row" style="gap:24px;margin-top:-24px;margin-bottom:32px">
+    <div style="background:var(--gold-lo);border:1px solid var(--gold-bd);border-radius:10px;padding:12px 20px;display:flex;flex-direction:column;gap:4px">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:700">Вводное занятие</div>
+      <div style="font-family:Georgia,serif;font-size:28px;font-weight:700;color:var(--white)">500 ₽</div>
+      <div style="font-size:12px;color:var(--muted)">День 1 — пробуешь без риска</div>
+    </div>
+    <div style="background:var(--gold-lo);border:1px solid var(--gold-bd);border-radius:10px;padding:12px 20px;display:flex;flex-direction:column;gap:4px">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:700">Полный курс</div>
+      <div style="font-family:Georgia,serif;font-size:28px;font-weight:700;color:var(--white)">5 000 ₽</div>
+      <div style="font-size:12px;color:var(--muted)">Все 5 дней · личный план</div>
+    </div>
+    <div style="background:var(--gold-lo);border:1px solid var(--gold-bd);border-radius:10px;padding:12px 20px;display:flex;flex-direction:column;gap:4px">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:700">Оплата</div>
+      <div style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:var(--white);margin-top:4px">Реквизиты ИП</div>
+      <div style="font-size:12px;color:var(--muted)">или QR-код</div>
+    </div>
+  </div>
+  <div class="checklist" style="margin-bottom:40px;max-width:480px">
+    <div class="check-item"><div class="check-box"></div><span>Открытые <strong>Google Sheets</strong> — заполняем вместе прямо на созвоне</span></div>
+    <div class="check-item"><div class="check-box"></div><span>Телефон или ноутбук с доступом к <strong>банковским выпискам</strong></span></div>
+    <div class="check-item"><div class="check-box"></div><span>Блокнот для записей (по желанию)</span></div>
+  </div>
+  <button class="start-btn" onclick="goTo(1)">
+    Начать День 1
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </button>
+</section>
+
+<!-- ДЕНЬ 1 -->
+<section class="day-panel" id="panel-1">
+  <div class="day-watermark">01</div>
+  <div class="day-header">
+    <div class="day-eyebrow">День 1 · Стартовая точка</div>
+    <h1 class="day-heading">Финансовый аудит</h1>
+    <p class="day-thesis">Прежде чем куда-то идти — нужно знать, где ты сейчас. Сегодня мы считаем чистый капитал: всё, что есть, минус всё, что должны.</p>
+    <div class="gold-rule"></div>
+  </div>
+
+  <div class="content-grid" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-eyebrow">Почему это важно</div>
+      <div class="card-title">Большинство людей не знают своей реальной финансовой картины</div>
+      <div class="card-body">
+        <div class="insight">«Я примерно представляю, сколько у меня денег» — это не финансовая картина. Это ощущение.</div>
+        <div class="concept">
+          <div class="concept-dot"></div>
+          <div class="concept-label">Мы не видим сумму по всем счетам сразу — каждый банк отдельно</div>
+        </div>
+        <div class="concept">
+          <div class="concept-dot"></div>
+          <div class="concept-label">Не знаем реальную стоимость имущества в сравнении с долгами</div>
+        </div>
+        <div class="concept">
+          <div class="concept-dot"></div>
+          <div class="concept-label">Не видим, богатеем ли мы год к году или только кажется</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-eyebrow">Ключевые понятия</div>
+      <div class="card-title">Активы, обязательства и чистый капитал</div>
+      <div class="card-body">
+        <div class="concept">
+          <div class="concept-dot"></div>
+          <div class="concept-label"><strong>Активы</strong> — всё, что у вас есть и имеет стоимость: деньги, вклады, брокерский счёт, недвижимость, авто</div>
+        </div>
+        <div class="concept">
+          <div class="concept-dot"></div>
+          <div class="concept-label"><strong>Обязательства</strong> — всё, что вы должны: ипотека, кредиты, долги</div>
+        </div>
+        <div class="concept">
+          <div class="concept-dot"></div>
+          <div class="concept-label"><strong>Чистый капитал</strong> — разница между ними. Это ваша реальная финансовая позиция</div>
+        </div>
+        <div class="formula-card">
+          <div class="formula-text">Активы − Обязательства = Чистый капитал</div>
+          <div class="formula-label">Если положительный — вы богаче, чем кажется. Если отрицательный — нормально, работаем с этим.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-grid three" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-eyebrow">Ликвидные активы</div>
+      <div class="card-title">Деньги «здесь и сейчас»</div>
+      <div class="card-body"><ul>
+        <li>Наличные</li>
+        <li>Карты и счета в банках</li>
+        <li>Вклады (с учётом даты закрытия)</li>
+        <li>Брокерский счёт / ИИС</li>
+        <li>Деньги в цифровых кошельках</li>
+      </ul></div>
+    </div>
+    <div class="card">
+      <div class="card-eyebrow">Нелик­видные активы</div>
+      <div class="card-title">Имущество со стоимостью</div>
+      <div class="card-body"><ul>
+        <li>Недвижимость (рыночная цена)</li>
+        <li>Автомобиль</li>
+        <li>Доля в бизнесе</li>
+        <li>Другое ценное имущество</li>
+      </ul></div>
+    </div>
+    <div class="card">
+      <div class="card-eyebrow">Обязательства</div>
+      <div class="card-title">Что вы должны</div>
+      <div class="card-body"><ul>
+        <li>Ипотека (остаток долга)</li>
+        <li>Автокредит</li>
+        <li>Потребкредиты</li>
+        <li>Кредитная карта (только долг)</li>
+        <li>Долги перед людьми</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="practice-block">
+    <div class="card-eyebrow">Работаем прямо сейчас</div>
+    <div class="card-title">Открываем Google Sheets — Шаблон «День 1»</div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Записываем все ликвидные активы с суммами — смотрим в приложения банков прямо сейчас</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Добавляем имущество по рыночной оценке (приблизительно — лучше занизить, чем завысить)</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Записываем все обязательства — ипотека, кредиты, остатки долгов</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body">Таблица считает чистый капитал автоматически. Смотрим на результат без оценки</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="task-block">
+    <div class="task-icon">Д/З</div>
+    <div class="task-content">
+      <div class="card-eyebrow">Домашнее задание до следующего созвона</div>
+      <div class="card-title">Уточнить и дополнить цифры</div>
+      <div class="card-body">Проверьте все счета, которые забыли или не знали точно. Запишите дату сегодняшнего аудита — через год будем сравнивать. Если чистый капитал отрицательный — это точка А, не приговор.</div>
+    </div>
+  </div>
+
+  <div class="panel-nav">
+    <button class="nav-arrow" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Назад
+    </button>
+    <button class="nav-arrow" onclick="goTo(2)">
+      День 2 — Доходы и расходы
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ДЕНЬ 2 -->
+<section class="day-panel" id="panel-2">
+  <div class="day-watermark">02</div>
+  <div class="day-header">
+    <div class="day-eyebrow">День 2 · Денежный поток</div>
+    <h1 class="day-heading">Доходы и расходы</h1>
+    <p class="day-thesis">Деньги есть — а куда уходят, непонятно. Сегодня открываем банковскую выписку и находим скрытые резервы в бюджете.</p>
+    <div class="gold-rule"></div>
+  </div>
+
+  <div class="content-grid" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-eyebrow">Почему бюджет не работает</div>
+      <div class="card-title">Проблема не в дисциплине — проблема в том, что мы не видим картину целиком</div>
+      <div class="card-body">
+        <div class="insight">Большинство людей тратят больше, чем думают. Не потому что транжиры — а потому что маленькие суммы незаметны.</div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label">Кофе 200₽ × 20 дней = 4 000₽/мес, которые не ощущаются</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label">Подписки: большинство платят за 3–5, о которых забыли</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label">Доставка еды и такси — самые «невидимые» расходы</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-eyebrow">Правило 50/30/20</div>
+      <div class="card-title">Простая структура здорового бюджета</div>
+      <div class="card-body">
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label"><strong>50% — обязательное:</strong> жильё, кредиты, транспорт, еда, связь</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label"><strong>30% — переменное:</strong> кафе, одежда, развлечения, хобби</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label"><strong>20% — накопления:</strong> цели, инвестиции, подушка</div></div>
+        <div class="insight">Это ориентир, не закон. У ипотечника цифры будут другими. Важен сам принцип — сначала накопить, потом потратить.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-grid wide" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-eyebrow">Три типа расходов — и почему важно их различать</div>
+      <div class="card-body">
+        <div class="tbl-wrap">
+          <table class="data-table">
+            <thead><tr><th>Тип</th><th>Что относится</th><th>Можно снизить?</th><th>Комментарий</th></tr></thead>
+            <tbody>
+              <tr><td class="tag">Фиксированные</td><td>Ипотека, кредит, аренда, коммуналка, связь</td><td>Сложно</td><td>Пересматриваем раз в год</td></tr>
+              <tr><td class="tag">Переменные</td><td>Еда, кафе, одежда, развлечения</td><td>Да — здесь резервы</td><td>Главная точка оптимизации</td></tr>
+              <tr><td class="tag">Нерегулярные</td><td>Ремонт, лечение, подарки, отпуск</td><td>Можно планировать</td><td>Делим на 12 и откладываем ежемесячно</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="practice-block">
+    <div class="card-eyebrow">Работаем прямо сейчас — Шаблон «День 2»</div>
+    <div class="card-title">Открываем выписку банка за прошлый месяц</div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Заносим все <strong>доходы</strong> прошлого месяца — зарплата, подработки, переводы</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Группируем расходы по категориям таблицы (обязательные → переменные)</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Смотрим автоматический <strong>остаток</strong> — это то, что реально можно откладывать</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body">Находим 2–3 статьи с пометкой «⚠ точка утечки» — решаем, что с ними делать</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="task-block">
+    <div class="task-icon">Д/З</div>
+    <div class="task-content">
+      <div class="card-eyebrow">Домашнее задание</div>
+      <div class="card-title">Три действия до следующего созвона</div>
+      <div class="card-body">1) Включить push-уведомления о тратах в банковском приложении. 2) Проверить список активных подписок — отменить одну, которой не пользуетесь. 3) Написать в таблице — откуда возьмутся 20% на накопления.</div>
+    </div>
+  </div>
+
+  <div class="panel-nav">
+    <button class="nav-arrow" onclick="goTo(1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      День 1 — Аудит
+    </button>
+    <button class="nav-arrow" onclick="goTo(3)">
+      День 3 — Финансовые цели
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ДЕНЬ 3 -->
+<section class="day-panel" id="panel-3">
+  <div class="day-watermark">03</div>
+  <div class="day-header">
+    <div class="day-eyebrow">День 3 · Навигация</div>
+    <h1 class="day-heading">Финансовые цели</h1>
+    <p class="day-thesis">Мечта — это «хочу на море». Цель — «через 8 месяцев откладываю 12 500₽ в месяц и еду на 10 дней в июне». Сегодня переводим одно в другое.</p>
+    <div class="gold-rule"></div>
+  </div>
+
+  <div class="content-grid" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-eyebrow">Почему мечты не сбываются</div>
+      <div class="card-title">Нет конкретики → нет действия</div>
+      <div class="card-body">
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label">«Хочу накопить на квартиру» — размытое намерение. Мозг не может планировать без числа и даты</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label">«Хочу финансовую независимость» — что это значит конкретно в рублях?</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label">Без горизонта и суммы любая цель кажется недостижимой — поэтому откладываем</div></div>
+        <div class="insight">Как только появляется конкретная сумма и срок — мозг начинает искать способ. Это не мотивация — это механика планирования.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-eyebrow">SMART-цель в финансах</div>
+      <div class="card-title">Пять вопросов, которые превращают мечту в план</div>
+      <div class="card-body">
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label"><strong>Specific:</strong> Что именно? Квартира / машина / пенсия / отпуск</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label"><strong>Measurable:</strong> Сколько стоит в рублях?</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label"><strong>Achievable:</strong> Сколько уже накоплено?</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label"><strong>Relevant:</strong> Это важно для вас сейчас?</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label"><strong>Time-bound:</strong> К какому сроку?</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-grid three" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-eyebrow">Краткосрочные · до 1 года</div>
+      <div class="card-title">Инструмент: накопительный счёт</div>
+      <div class="card-body"><ul>
+        <li>Подушка безопасности (3–6 мес расходов)</li>
+        <li>Отпуск / путешествие</li>
+        <li>Крупная покупка: техника, мебель</li>
+        <li>Обучение, курс</li>
+      </ul></div>
+    </div>
+    <div class="card">
+      <div class="card-eyebrow">Среднесрочные · 1–5 лет</div>
+      <div class="card-title">Инструмент: вклад, облигации</div>
+      <div class="card-body"><ul>
+        <li>Взнос по ипотеке</li>
+        <li>Автомобиль</li>
+        <li>Образование (своё / детей)</li>
+        <li>Ремонт, переезд</li>
+      </ul></div>
+    </div>
+    <div class="card">
+      <div class="card-eyebrow">Долгосрочные · 5+ лет</div>
+      <div class="card-title">Инструмент: ИИС, фонды акций</div>
+      <div class="card-body"><ul>
+        <li>Пенсионный капитал</li>
+        <li>Финансовая независимость</li>
+        <li>Образование детей к 18 годам</li>
+        <li>Недвижимость для сдачи</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="practice-block">
+    <div class="card-eyebrow">Работаем прямо сейчас — Шаблон «День 3»</div>
+    <div class="card-title">Пишем цели без самоцензуры — сначала всё, что хочется</div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Записываем 5–7 целей в таблицу — не оцениваем «реально / нереально»</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Для каждой: сумма → срок → уже накоплено → таблица считает нужную сумму в месяц</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Смотрим итоговую строку — сколько нужно откладывать суммарно</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body">Сравниваем с остатком из Дня 2. Если больше — расставляем приоритеты, отодвигаем срок или увеличиваем доход</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="task-block">
+    <div class="task-icon">Д/З</div>
+    <div class="task-content">
+      <div class="card-eyebrow">Домашнее задание</div>
+      <div class="card-title">Выбрать и уточнить три приоритетных цели</div>
+      <div class="card-body">Из всего списка — выделить 3 самые важные. Для каждой найти реальную стоимость (прайс, объявление, расчёт). На следующем созвоне подбираем инструменты именно под эти три цели.</div>
+    </div>
+  </div>
+
+  <div class="panel-nav">
+    <button class="nav-arrow" onclick="goTo(2)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      День 2 — Бюджет
+    </button>
+    <button class="nav-arrow" onclick="goTo(4)">
+      День 4 — Инструменты
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ДЕНЬ 4 -->
+<section class="day-panel" id="panel-4">
+  <div class="day-watermark">04</div>
+  <div class="day-header">
+    <div class="day-eyebrow">День 4 · Инструменты</div>
+    <h1 class="day-heading">Куда вкладывать деньги</h1>
+    <p class="day-thesis">У каждой цели — свой инструмент. Деньги на подушку безопасности и деньги на пенсию через 20 лет — это разные кошельки с разными правилами.</p>
+    <div class="gold-rule"></div>
+  </div>
+
+  <div class="content-grid" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-eyebrow">Главный принцип</div>
+      <div class="card-title">Деньги на матрасе теряют стоимость каждый год</div>
+      <div class="card-body">
+        <div class="insight">Инфляция в России — 8–12% в год. Деньги в наличных или на карте без процентов дешевеют на эту сумму ежегодно. Инвестировать — значит не терять.</div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label">Риск и доходность связаны: выше доходность — выше риск</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label">Срок определяет инструмент: чем длиннее — тем агрессивнее можно быть</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label">Диверсификация снижает риск без потери доходности</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-eyebrow">Правило первого шага</div>
+      <div class="card-title">Не нужно всё сразу. Нужно начать с одного</div>
+      <div class="card-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Первый приоритет</strong> — накопить подушку безопасности (3–6 мес расходов) на накопительном счёте</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Потом</strong> — открыть ИИС или брокерский счёт для долгосрочных целей</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Параллельно</strong> — краткосрочные цели на вкладах под конкретные даты</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-grid wide" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-eyebrow">Инструменты — от простого к сложному</div>
+      <div class="card-body">
+        <div class="tbl-wrap">
+          <table class="data-table">
+            <thead><tr><th>Инструмент</th><th>Для чего</th><th>Доходность</th><th>Риск</th><th>Минимальный срок</th></tr></thead>
+            <tbody>
+              <tr><td class="tag">Накопительный счёт</td><td>Подушка безопасности, текущие цели</td><td>12–14%</td><td>Нет</td><td>Любой</td></tr>
+              <tr><td class="tag">Вклад в банке</td><td>Цели с чётким сроком до 1 года</td><td>13–16%</td><td>Нет</td><td>3–12 мес</td></tr>
+              <tr><td class="tag">ОФЗ (облигации)</td><td>Цели 1–3 года, стабильный доход</td><td>14–16%</td><td>Низкий</td><td>1–3 года</td></tr>
+              <tr><td class="tag">Корп. облигации</td><td>Цели 1–5 лет, чуть выше доходность</td><td>15–18%</td><td>Умеренный</td><td>1–5 лет</td></tr>
+              <tr><td class="tag">БПИФ на акции РФ</td><td>Пенсионный капитал, долгий горизонт</td><td>Рынок</td><td>Средний</td><td>5+ лет</td></tr>
+              <tr><td class="tag">ИИС</td><td>Долгосрочные цели + налоговый вычет</td><td>Рынок + вычет</td><td>Зависит от активов</td><td>3+ года</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="practice-block">
+    <div class="card-eyebrow">Работаем прямо сейчас — Шаблон «День 4»</div>
+    <div class="card-title">Каждой цели из Дня 3 назначаем инструмент</div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Открываем таблицу День 4 → берём три цели из Дня 3</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">По горизонту цели выбираем инструмент из справочника выше</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Записываем, где откроем счёт (банк, брокер), и реальную дату открытия</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body">Если ИИС ещё не открыт — планируем это как первое действие после курса</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="task-block">
+    <div class="task-icon">Д/З</div>
+    <div class="task-content">
+      <div class="card-eyebrow">Домашнее задание</div>
+      <div class="card-title">Открыть один счёт — накопительный или брокерский</div>
+      <div class="card-body">Для большинства первый шаг — накопительный счёт в вашем банке (занимает 2 минуты). Если уже есть — пополнить его на сумму первого взноса по плану. На следующем созвоне собираем всё в единый план.</div>
+    </div>
+  </div>
+
+  <div class="panel-nav">
+    <button class="nav-arrow" onclick="goTo(3)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      День 3 — Цели
+    </button>
+    <button class="nav-arrow" onclick="goTo(5)">
+      День 5 — Финальный план
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ДЕНЬ 5 -->
+<section class="day-panel" id="panel-5">
+  <div class="day-watermark">05</div>
+  <div class="day-header">
+    <div class="day-eyebrow">День 5 · Финал</div>
+    <h1 class="day-heading">Готовый финансовый план</h1>
+    <p class="day-thesis">Сегодня складываем всё вместе: аудит, бюджет, цели и инструменты — в один документ, который вы будете открывать раз в месяц.</p>
+    <div class="gold-rule"></div>
+  </div>
+
+  <div class="content-grid" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-eyebrow">Что вы сделали за эту неделю</div>
+      <div class="card-title">Пять шагов, которые большинство людей не делают никогда</div>
+      <div class="card-body">
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label"><strong>День 1:</strong> Посчитали чистый капитал — знаете точку А</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label"><strong>День 2:</strong> Разобрали бюджет — знаете, куда уходят деньги</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label"><strong>День 3:</strong> Поставили конкретные цели с суммами и сроками</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label"><strong>День 4:</strong> Выбрали инструменты под каждую цель</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label"><strong>День 5:</strong> Собираем всё в единый план — и начинаем жить по нему</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-eyebrow">Почему план работает</div>
+      <div class="card-title">Не потому что вы стали дисциплинированнее — а потому что теперь видите</div>
+      <div class="card-body">
+        <div class="insight">«Невозможно управлять тем, что не измеряешь» — это работает и с деньгами. Ваш план делает финансы видимыми.</div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label">15 минут в месяц на обновление таблицы сохраняют ясность целый год</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label">Ежегодный аудит (повтор Дня 1) показывает рост капитала</div></div>
+        <div class="concept"><div class="concept-dot"></div><div class="concept-label">При изменениях — корректируем план, а не бросаем его</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-grid wide" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-eyebrow">Ежемесячный ритуал — 15 минут 1-го числа</div>
+      <div class="card-title">Чек-лист финансового здоровья</div>
+      <div class="card-body">
+        <div class="content-grid three" style="margin-top:8px;gap:12px">
+          <div style="background:var(--navy-3);border-radius:8px;padding:16px">
+            <div class="card-eyebrow" style="margin-bottom:8px">Доходы</div>
+            <ul class="card-body"><li>Все поступления получены?</li><li>Есть дополнительный доход?</li></ul>
+          </div>
+          <div style="background:var(--navy-3);border-radius:8px;padding:16px">
+            <div class="card-eyebrow" style="margin-bottom:8px">Расходы</div>
+            <ul class="card-body"><li>Сверил с выпиской банка</li><li>Нет лишних подписок?</li><li>Крупные незапланированные траты — за счёт чего?</li></ul>
+          </div>
+          <div style="background:var(--navy-3);border-radius:8px;padding:16px">
+            <div class="card-eyebrow" style="margin-bottom:8px">Накопления</div>
+            <ul class="card-body"><li>Пополнил счета по плану?</li><li>Чистый капитал вырос?</li><li>Иду по графику к целям?</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="practice-block">
+    <div class="card-eyebrow">Финальная работа — Шаблон «День 5»</div>
+    <div class="card-title">Собираем сводную карточку: точка А → точка Б</div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Вносим данные из Дня 1: чистый капитал сегодня, доход, расходы, свободный остаток</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Ставим цель на 12 месяцев: каким должен стать чистый капитал через год</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Переносим топ-3 цели с инструментами из Дней 3–4</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body">Ставим напоминание в календарь: 1-е число каждого месяца — 15 минут с таблицей</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="task-block">
+    <div class="task-icon">★</div>
+    <div class="task-content">
+      <div class="card-eyebrow">Финальный шаг</div>
+      <div class="card-title">Поделитесь планом с кем-то, кому доверяете</div>
+      <div class="card-body">Не цифрами — идеей. «Я составила финансовый план. Вот мои три главные цели на год.» Когда мы произносим вслух — это становится реальным. Поздравляю — у вас теперь есть финансовый план.</div>
+    </div>
+  </div>
+
+  <div class="panel-nav">
+    <button class="nav-arrow" onclick="goTo(4)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      День 4 — Инструменты
+    </button>
+    <button class="nav-arrow" onclick="goTo(0)" style="background:var(--gold-lo);border-color:var(--gold);color:var(--cream)">
+      К началу курса
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12h18M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</section>
+
+</main>
+
+<script>
+const DAYS = [
+  { label: null,   name: "Добро пожаловать" },
+  { label: "День 1", name: "Финансовый аудит" },
+  { label: "День 2", name: "Доходы и расходы" },
+  { label: "День 3", name: "Финансовые цели" },
+  { label: "День 4", name: "Инструменты" },
+  { label: "День 5", name: "Финансовый план" },
+];
+
+let current = 0;
+
+function buildNav() {
+  const nav = document.getElementById('dayNav');
+  const dots = document.getElementById('dots');
+  DAYS.forEach((d, i) => {
+    // sidebar button
+    const btn = document.createElement('button');
+    btn.className = 'day-btn' + (i === 0 ? ' active' : '');
+    btn.onclick = () => goTo(i);
+    if (i === 0) {
+      btn.innerHTML = `<span class="day-num-badge">★</span>
+        <span class="day-btn-text"><span class="day-btn-name">Введение</span></span>`;
+    } else {
+      btn.innerHTML = `<span class="day-num-badge">${i}</span>
+        <span class="day-btn-text">
+          <span class="day-btn-label">${d.label}</span>
+          <span class="day-btn-name">${d.name}</span>
+        </span>`;
+    }
+    nav.appendChild(btn);
+
+    // top dot (skip intro)
+    if (i > 0) {
+      const dot = document.createElement('div');
+      dot.className = 'progress-dot';
+      dot.onclick = () => goTo(i);
+      dot.title = d.label + ' — ' + d.name;
+      dots.appendChild(dot);
+    }
+  });
+}
+
+function goTo(n) {
+  const panels = document.querySelectorAll('.day-panel');
+  const navBtns = document.querySelectorAll('.day-btn');
+  const dots = document.querySelectorAll('.progress-dot');
+  const topTitle = document.getElementById('topDayTitle');
+
+  panels.forEach((p, i) => p.classList.toggle('active', i === n));
+  navBtns.forEach((b, i) => b.classList.toggle('active', i === n));
+
+  // dots: index offset by 1 (no dot for intro)
+  dots.forEach((d, i) => {
+    d.classList.toggle('active', i + 1 === n);
+    d.classList.toggle('done', i + 1 < n);
+  });
+
+  const d = DAYS[n];
+  topTitle.textContent = n === 0 ? '' : (d.label + ' · ' + d.name);
+  current = n;
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' && current < DAYS.length - 1) goTo(current + 1);
+  if (e.key === 'ArrowLeft'  && current > 0)               goTo(current - 1);
+});
+
+buildNav();
+</script>
