@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>РезервЭнерго Екатеринбург — резервное электроснабжение частного дома</title>
+<meta name="description" content="Подбор и установка резервного электроснабжения для частных домов Екатеринбурга и области — от портативной электростанции до полной автономии.">
+<style>
+  :root {
+    --night: #0f1115;
+    --night-2: #181c24;
+    --night-border: #2a2f3a;
+    --amber: #f2b84f;
+    --amber-soft: #d99a35;
+    --paper: #f7f4ec;
+    --paper-2: #eee9dc;
+    --ink: #1c1f26;
+    --ink-soft: #4a5062;
+    --ink-faint: #767c8c;
+    --blue: #4a7ba6;
+    --border: #ddd6c4;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.6;
+  }
+  .serif { font-family: Georgia, "Iowan Old Style", "Times New Roman", serif; }
+  h1, h2, h3 { font-family: Georgia, "Iowan Old Style", "Times New Roman", serif; text-wrap: balance; margin: 0; }
+  img, svg { max-width: 100%; }
+  a { color: inherit; }
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 72px 0; }
+  .eyebrow {
+    font-family: ui-monospace, "SF Mono", "Roboto Mono", Consolas, monospace;
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--ink-faint); margin-bottom: 12px; display: block;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--amber); color: #241a05; font-weight: 700;
+    padding: 15px 28px; border-radius: 3px; text-decoration: none;
+    font-size: 1rem; border: none; cursor: pointer;
+    transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+  }
+  .btn:hover, .btn:focus-visible {
+    background: var(--amber-soft);
+    box-shadow: 0 8px 28px -6px rgba(242,184,79,0.6);
+    transform: translateY(-2px);
+  }
+  .btn:active { transform: translateY(0); }
+  .btn.ghost {
+    background: transparent; color: #f2ede0; border: 1px solid rgba(242,237,224,0.35);
+    font-weight: 600;
+  }
+  .btn.ghost:hover, .btn.ghost:focus-visible {
+    border-color: var(--amber); color: var(--amber); background: rgba(242,184,79,0.08);
+    box-shadow: 0 8px 24px -8px rgba(242,184,79,0.35);
+  }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--blue); outline-offset: 2px;
+  }
+
+  /* ---- HERO : ночь, дом со светом ---- */
+  .hero {
+    background: var(--night); color: #f2ede0; position: relative; overflow: hidden;
+    padding: 64px 0 0;
+  }
+  .hero-inner { position: relative; z-index: 2; padding-bottom: 56px; }
+  .hero-eyebrow { color: #9aa3b8; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.18; max-width: 16ch; margin-bottom: 20px; }
+  .hero h1 .lit { color: var(--amber); }
+  .hero p.lead { font-size: 1.15rem; color: #c7cbd8; max-width: 52ch; margin: 0 0 32px; }
+  .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
+  .hero-note { font-size: 0.85rem; color: #7d8598; }
+
+  /* stars */
+  .stars { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+  .star {
+    position: absolute; width: 2px; height: 2px; border-radius: 50%;
+    background: #cdd4e6; animation: twinkle 3.5s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.9; }
+  }
+
+  /* skyline graphic */
+  .skyline {
+    display: flex; align-items: flex-end; gap: 2px; height: 160px;
+    margin-top: 48px; position: relative; z-index: 2;
+  }
+  .house { background: #1c212b; border-radius: 2px 2px 0 0; position: relative; flex-shrink: 0; }
+  .house .window {
+    position: absolute; width: 9px; height: 11px; background: #10131a; border-radius: 1px;
+    transition: background 0.4s ease, box-shadow 0.4s ease;
+  }
+  .house.lit .window.on {
+    background: var(--amber);
+    box-shadow: 0 0 14px 3px rgba(242,184,79,0.55);
+    animation: flicker-in 1.8s ease-out 0.3s both;
+  }
+  @keyframes flicker-in {
+    0% { opacity: 0; box-shadow: 0 0 0 0 rgba(242,184,79,0); }
+    35% { opacity: 1; }
+    45% { opacity: 0.4; }
+    60% { opacity: 1; box-shadow: 0 0 14px 3px rgba(242,184,79,0.55); }
+    100% { opacity: 1; }
+  }
+  .skyline-fade {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
+    background: linear-gradient(to top, var(--night), transparent); z-index: 2;
+  }
+
+  /* ---- TRUST BAR ---- */
+  .trust {
+    background: var(--night-2); color: #cdd2de; padding: 20px 0;
+    font-size: 0.92rem; text-align: center;
+  }
+  .trust b { color: var(--amber); }
+
+  /* ---- PACKAGES ---- */
+  .section-head { max-width: 62ch; margin-bottom: 40px; }
+  .section-head h2 { font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 10px; }
+  .section-head p { color: var(--ink-soft); font-size: 1.02rem; margin: 0; }
+
+  .packages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .pkg {
+    background: #fff; border: 1px solid var(--border); border-radius: 4px;
+    padding: 28px 26px; display: flex; flex-direction: column;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  }
+  .pkg:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 34px -16px rgba(28,31,38,0.22);
+    border-color: #c9c1a8;
+  }
+  .pkg.featured { border-color: var(--amber-soft); box-shadow: 0 0 0 1px var(--amber-soft); }
+  .pkg.featured:hover {
+    box-shadow: 0 0 0 1px var(--amber-soft), 0 20px 36px -14px rgba(217,154,53,0.4);
+  }
+  .pkg .tag { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: var(--amber-soft); margin-bottom: 10px; font-family: ui-monospace, monospace; }
+  .pkg h3 { font-size: 1.2rem; margin-bottom: 8px; }
+  .pkg .price {
+    font-family: ui-monospace, "SF Mono", "Roboto Mono", Consolas, monospace;
+    font-variant-numeric: tabular-nums; font-size: 1.05rem; font-weight: 700;
+    color: var(--ink); margin-bottom: 14px;
+  }
+  .pkg p { font-size: 0.92rem; color: var(--ink-soft); margin: 0 0 14px; flex-grow: 1; }
+  .pkg .who { font-size: 0.84rem; color: var(--ink-faint); border-top: 1px solid var(--border); padding-top: 12px; }
+
+  /* ---- QUICK FIX / POWERSTATIONS ---- */
+  .quickfix {
+    background: var(--paper-2); border-radius: 6px; padding: 40px;
+    display: flex; gap: 36px; align-items: center; flex-wrap: wrap;
+  }
+  .quickfix .copy { flex: 1 1 320px; }
+  .quickfix .copy h2 { font-size: 1.5rem; margin-bottom: 12px; }
+  .quickfix .copy p { color: var(--ink-soft); margin: 0 0 18px; max-width: 46ch; }
+  .quickfix .figures { flex: 1 1 260px; display: flex; flex-direction: column; gap: 10px; }
+  .figure-row {
+    display: flex; justify-content: space-between; padding: 10px 0;
+    border-bottom: 1px solid var(--border); font-size: 0.92rem;
+  }
+  .figure-row .price { font-family: ui-monospace, monospace; font-variant-numeric: tabular-nums; font-weight: 700; }
+
+  /* ---- HOW IT WORKS ---- */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .step-card { position: relative; padding-left: 0; }
+  .step-num {
+    font-family: Georgia, serif; font-size: 2.6rem; font-weight: 700; color: var(--paper-2);
+    -webkit-text-stroke: 1.5px var(--amber-soft); color: transparent;
+    line-height: 1; margin-bottom: 10px; display: block;
+  }
+  .step-card h3 { font-size: 1.05rem; margin-bottom: 8px; }
+  .step-card p { font-size: 0.92rem; color: var(--ink-soft); margin: 0; }
+
+  /* ---- FAQ ---- */
+  .faq-item { border-bottom: 1px solid var(--border); padding: 20px 0; }
+  .faq-item summary {
+    font-weight: 700; cursor: pointer; font-size: 1.02rem; list-style: none;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after {
+    content: "+"; font-family: Georgia, serif; font-size: 1.4rem; color: var(--amber-soft);
+    flex-shrink: 0; display: inline-block; transition: transform 0.25s ease;
+  }
+  .faq-item[open] summary::after { transform: rotate(45deg); }
+  .faq-item p {
+    margin: 14px 0 0; color: var(--ink-soft); font-size: 0.94rem; max-width: 64ch;
+    animation: faq-in 0.3s ease;
+  }
+  @keyframes faq-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ---- FINAL CTA / FORM ---- */
+  .cta-final { background: var(--night); color: #f2ede0; border-radius: 6px; padding: 48px 40px; }
+  .cta-grid { display: flex; gap: 48px; flex-wrap: wrap; }
+  .cta-copy { flex: 1 1 320px; }
+  .cta-copy h2 { font-size: 1.8rem; margin-bottom: 14px; max-width: 14ch; }
+  .cta-copy p { color: #c7cbd8; max-width: 42ch; margin: 0 0 20px; }
+  .cta-phone { font-family: ui-monospace, monospace; font-size: 1.3rem; font-weight: 700; color: var(--amber); }
+  .cta-form { flex: 1 1 320px; display: flex; flex-direction: column; gap: 12px; }
+  .cta-form input, .cta-form textarea {
+    background: #1c212b; border: 1px solid var(--night-border); color: #f2ede0;
+    padding: 13px 14px; border-radius: 3px; font-size: 0.95rem; font-family: inherit;
+    width: 100%; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .cta-form input:focus, .cta-form textarea:focus {
+    border-color: var(--amber-soft); box-shadow: 0 0 0 3px rgba(242,184,79,0.18); outline: none;
+  }
+  .cta-form input::placeholder, .cta-form textarea::placeholder { color: #7d8598; }
+  .cta-form textarea { resize: vertical; min-height: 70px; }
+
+  footer { padding: 32px 0; text-align: center; font-size: 0.85rem; color: var(--ink-faint); }
+  footer .fname { font-weight: 700; color: var(--ink-soft); }
+
+  .placeholder-note {
+    background: #fdf1d6; border: 1px dashed #c9a227; color: #6b5410;
+    font-size: 0.82rem; padding: 8px 14px; border-radius: 3px; text-align: center;
+  }
+
+  /* ---- scroll reveal ---- */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.is-visible { opacity: 1; transform: none; }
+  .reveal-1.is-visible { transition-delay: 0.05s; }
+  .reveal-2.is-visible { transition-delay: 0.15s; }
+  .reveal-3.is-visible { transition-delay: 0.25s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+    .reveal { opacity: 1; transform: none; }
+    .star { animation: none; opacity: 0.5; }
+  }
+
+  @media (max-width: 860px) {
+    .packages { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; }
+    .cta-grid { gap: 32px; }
+  }
+  @media (max-width: 640px) {
+    section { padding: 48px 0; }
+    .hero { padding-top: 48px; }
+    .skyline { height: 100px; margin-top: 36px; }
+    .quickfix { padding: 28px 22px; }
+    .cta-final { padding: 32px 24px; }
+    .pkg:hover, .pkg.featured:hover { transform: none; }
+  }
+  @media (max-width: 420px) {
+    .container { padding: 0 18px; }
+    .hero-cta { flex-direction: column; align-items: stretch; }
+    .hero-cta .btn { justify-content: center; }
+    .btn { padding: 14px 22px; }
+    .step-num { font-size: 2.1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="placeholder-note">Черновая версия сайта — телефон, email и название временные (placeholder), заменить перед публикацией</div>
+
+<header class="hero">
+  <div class="container hero-inner">
+    <span class="eyebrow hero-eyebrow">РезервЭнерго Екатеринбург</span>
+    <h1>Когда во всём районе темно — в <span class="lit">вашем доме</span> горит свет</h1>
+    <p class="lead">Подбираем и устанавливаем резервное электроснабжение для частных домов Екатеринбурга и области — от компактной электростанции на сегодня до полной автономии на годы вперёд.</p>
+    <div class="hero-cta">
+      <a class="btn" href="#zayavka">Оставить заявку</a>
+      <a class="btn ghost" href="tel:+70000000000">Позвонить: [ТЕЛЕФОН]</a>
+    </div>
+    <p class="hero-note">Работаем с сертифицированными монтажными партнёрами в Екатеринбурге</p>
+  </div>
+  <div class="stars" aria-hidden="true" id="stars"></div>
+  <div class="skyline" aria-hidden="true" id="skyline"></div>
+  <div class="skyline-fade"></div>
+</header>
+
+<div class="trust">
+  <div class="container">Подбираем нужный уровень защиты под ваш дом — <b>без переплаты за лишнее</b> и без давления продать самый дорогой вариант</div>
+</div>
+
+<section id="pakety">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--amber-soft)">Три уровня защиты</span>
+      <h2>Под ваш дом, не «генератор вообще»</h2>
+      <p>Каждый пакет закрывает свой сценарий отключений — от коротких и частых до долгих зимних.</p>
+    </div>
+    <div class="packages">
+      <div class="pkg reveal reveal-1">
+        <span class="tag">Эконом</span>
+        <h3>ИБП-защита</h3>
+        <div class="price">150 000–280 000 ₽</div>
+        <p>ИБП 5–6 кВт + аккумуляторы на 4–12 часов автономной работы, без генератора и топлива.</p>
+        <div class="who">Для частых, но коротких отключений — до 4 часов</div>
+      </div>
+      <div class="pkg featured reveal reveal-2">
+        <span class="tag">Стандарт · рекомендуем</span>
+        <h3>Генератор + АВР</h3>
+        <div class="price">200 000–350 000 ₽</div>
+        <p>Бензиновый или газовый генератор с автоматическим переключением — свет включается сам, даже когда никого нет дома.</p>
+        <div class="who">Для регулярных отключений на 4–8 часов</div>
+      </div>
+      <div class="pkg reveal reveal-3">
+        <span class="tag">Премиум</span>
+        <h3>Полная автономия</h3>
+        <div class="price">от 400 000–700 000+ ₽</div>
+        <p>Дизель-генератор + АВР + резерв ИБП на переходный интервал, топливная система, вентиляция.</p>
+        <div class="who">Для большого дома и чувствительного оборудования — котёл, скважинный насос</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="quickfix reveal">
+      <div class="copy">
+        <span class="eyebrow" style="color:var(--amber-soft)">Нужно решение сегодня?</span>
+        <h2>Портативная электростанция — без монтажа, без ожидания</h2>
+        <p>Пока решаете, нужна ли полная система — компактная электростанция закроет свет, холодильник и связь уже сегодня. Доставка в день обращения.</p>
+        <a class="btn" href="#zayavka" style="background:var(--ink); color:#fff;">Подобрать модель</a>
+      </div>
+      <div class="figures">
+        <div class="figure-row"><span>Компактная, для гаджетов и света</span><span class="price">от 16 390 ₽</span></div>
+        <div class="figure-row"><span>Средняя, с розеткой 220В</span><span class="price">от 32 890 ₽</span></div>
+        <div class="figure-row"><span>Мощная, на весь дом на время</span><span class="price">от 98 890 ₽</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--amber-soft)">Как это работает</span>
+      <h2>Три шага от звонка до защищённого дома</h2>
+    </div>
+    <div class="steps">
+      <div class="step-card reveal reveal-1">
+        <span class="step-num">01</span>
+        <h3>Оставляете заявку</h3>
+        <p>Расскажете о доме и о том, как часто и надолго отключают свет — это займёт пару минут.</p>
+      </div>
+      <div class="step-card reveal reveal-2">
+        <span class="step-num">02</span>
+        <h3>Подбираем пакет</h3>
+        <p>Предложим конкретный вариант под ваш дом и бюджет, без навязывания самого дорогого.</p>
+      </div>
+      <div class="step-card reveal reveal-3">
+        <span class="step-num">03</span>
+        <h3>Монтаж и сопровождение</h3>
+        <p>Устанавливает сертифицированный партнёр, мы ведём сделку от заявки до включения.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow" style="color:var(--amber-soft)">Частые вопросы</span>
+      <h2>Прежде чем звонить</h2>
+    </div>
+    <details class="faq-item reveal">
+      <summary>Это дорого?</summary>
+      <p>Сравните с ценой испорченной системы отопления зимой или сгоревшей бытовой техники при скачке напряжения после отключения — система резервного питания окупается на первом же серьёзном инциденте.</p>
+    </details>
+    <details class="faq-item reveal">
+      <summary>Может, просто справлюсь генератором вручную?</summary>
+      <p>АВР срабатывает автоматически — в том числе когда в доме никого нет: на даче в будний день, в отпуске, ночью. Ручной генератор в этот момент не поможет.</p>
+    </details>
+    <details class="faq-item reveal">
+      <summary>Не боюсь ли пожара или некачественного монтажа?</summary>
+      <p>Монтаж и проект выполняет сертифицированный партнёр с допуском по электробезопасности — не кустарная сборка своими руками.</p>
+    </details>
+    <details class="faq-item reveal">
+      <summary>Сколько занимает установка полного комплекта?</summary>
+      <p>От проекта до сдачи в эксплуатацию — обычно 10–20 дней, в зависимости от сложности системы и согласований.</p>
+    </details>
+  </div>
+</section>
+
+<section id="zayavka">
+  <div class="container">
+    <div class="cta-final reveal">
+      <div class="cta-grid">
+        <div class="cta-copy">
+          <h2>Готовы обсудить ваш дом?</h2>
+          <p>Оставьте заявку — перезвоним и поможем подобрать пакет. Или звоните прямо сейчас:</p>
+          <div class="cta-phone">[ТЕЛЕФОН]</div>
+        </div>
+        <form class="cta-form" action="mailto:info@example.ru" method="post" enctype="text/plain">
+          <input type="text" name="name" placeholder="Ваше имя" required>
+          <input type="tel" name="phone" placeholder="Телефон" required>
+          <textarea name="comment" placeholder="Дом, район, как часто отключают свет (не обязательно)"></textarea>
+          <button type="submit" class="btn">Отправить заявку</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="fname">РезервЭнерго Екатеринбург</div>
+    <div>[ТЕЛЕФОН] · [EMAIL] · Екатеринбург и Свердловская область</div>
+  </div>
+</footer>
+
+<script>
+  // ночной силуэт домов с одним освещённым окном — чисто декоративная генерация
+  (function () {
+    var wrap = document.getElementById('skyline');
+    if (!wrap) return;
+    var n = 14;
+    var litIndex = 9;
+    for (var i = 0; i < n; i++) {
+      var h = 60 + Math.round(Math.sin(i * 1.3) * 20 + Math.random() * 30);
+      var w = 100 / n;
+      var house = document.createElement('div');
+      house.className = 'house' + (i === litIndex ? ' lit' : '');
+      house.style.width = 'calc(' + w + '% - 2px)';
+      house.style.height = h + 'px';
+      var rows = Math.max(2, Math.floor(h / 34));
+      for (var r = 0; r < rows; r++) {
+        var win = document.createElement('div');
+        win.className = 'window' + (i === litIndex && r === Math.floor(rows / 2) ? ' on' : '');
+        win.style.left = (w > 6 ? '30%' : '50%');
+        win.style.bottom = (10 + r * 32) + 'px';
+        house.appendChild(win);
+      }
+      wrap.appendChild(house);
+    }
+  })();
+
+  // редкие мерцающие звёзды в тёмном хиро — декоративно
+  (function () {
+    var wrap = document.getElementById('stars');
+    if (!wrap) return;
+    var count = 40;
+    for (var i = 0; i < count; i++) {
+      var star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 55 + '%';
+      star.style.animationDelay = (Math.random() * 3.5) + 's';
+      wrap.appendChild(star);
+    }
+  })();
+
+  // появление блоков при скролле
+  (function () {
+    var items = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window) || !items.length) {
+      items.forEach(function (el) { el.classList.add('is-visible'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    items.forEach(function (el) { io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>
